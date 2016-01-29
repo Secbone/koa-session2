@@ -63,6 +63,12 @@ const app = new Koa();
 app.use(session({
     store: new Store()
 }));
+
+app.use(ctx => {
+    let user = ctx.session.user;
+
+    ctx.session.view = "index";
+});
 ```
 
 ## Options
