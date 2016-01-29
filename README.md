@@ -29,7 +29,7 @@ Store.js
 import Redis from "ioredis";
 import {Store} from "koa-session2";
 
-export default class SeckenStore extends Store {
+export default class RedisStore extends Store {
     constructor() {
         super();
         this.redis = new Redis();
