@@ -27,7 +27,7 @@ exports.default = function () {
                                 break;
                             }
 
-                            ctx._session = {};
+                            ctx.session = {};
                             _context4.next = 8;
                             break;
 
@@ -36,42 +36,34 @@ exports.default = function () {
                             return opts.store.get(id);
 
                         case 7:
-                            ctx._session = _context4.sent;
+                            ctx.session = _context4.sent;
 
                         case 8:
 
-                            ctx.__defineGetter__("session", function () {
-                                return ctx._session;
-                            });
-
-                            ctx.__defineSetter__("session", function (obj) {
-                                ctx._session = obj;
-                            });
-
                             next();
 
-                            if (!(ctx._session == null)) {
-                                _context4.next = 16;
+                            if (!(ctx.session == null)) {
+                                _context4.next = 14;
                                 break;
                             }
 
-                            _context4.next = 14;
+                            _context4.next = 12;
                             return opts.store.destory(id);
 
-                        case 14:
-                            _context4.next = 20;
+                        case 12:
+                            _context4.next = 18;
                             break;
 
-                        case 16:
-                            _context4.next = 18;
-                            return opts.store.set(ctx._session, Object.assign(opts, { sid: id }));
+                        case 14:
+                            _context4.next = 16;
+                            return opts.store.set(ctx.session, Object.assign(opts, { sid: id }));
 
-                        case 18:
+                        case 16:
                             sid = _context4.sent;
 
                             if (sid != id) ctx.cookies.set(opts.key, sid, opts);
 
-                        case 20:
+                        case 18:
                         case "end":
                             return _context4.stop();
                     }
@@ -113,7 +105,7 @@ var Store = exports.Store = function () {
                 session = new Buffer(string, "base64").toString();
             } catch (e) {}
 
-            return session;
+            return JSON.parse(session);
         }
     }, {
         key: "encode",
@@ -159,7 +151,8 @@ var Store = exports.Store = function () {
                                 if (!opts.sid) {
                                     opts.sid = this.getID(24);
                                 }
-                                this.session[opts.sid] = this.encode(session);
+
+                                this.session[opts.sid] = this.encode(JSON.stringify(session));
 
                                 return _context2.abrupt("return", opts.sid);
 

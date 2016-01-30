@@ -14,7 +14,7 @@ export class Store {
             session = new Buffer(string, "base64").toString();
         } catch(e) {}
 
-        return session;
+        return JSON.parse(session);
     }
 
     encode(obj) {
@@ -34,7 +34,8 @@ export class Store {
         if(!opts.sid) {
             opts.sid = this.getID(24);
         }
-        this.session[opts.sid] = this.encode(session);
+
+        this.session[opts.sid] = this.encode(JSON.stringify(session));
 
         return opts.sid;
     }
@@ -53,25 +54,17 @@ export default function(opts = {}) {
         let id = ctx.cookies.get(opts.key, opts);
 
         if(!id) {
-            ctx._session = {};
+            ctx.session = {};
         } else {
-            ctx._session = await opts.store.get(id);
+            ctx.session = await opts.store.get(id);
         }
-
-        ctx.__defineGetter__("session", function() {
-            return ctx._session;
-        });
-
-        ctx.__defineSetter__("session", function(obj) {
-            ctx._session = obj;
-        })
 
         next();
 
-        if(ctx._session == null) {
+        if(ctx.session == null) {
             await opts.store.destory(id);
         } else {
-            let sid = await opts.store.set(ctx._session, Object.assign(opts, {sid: id}));
+            let sid = await opts.store.set(ctx.session, Object.assign(opts, {sid: id}));
 
             if(sid != id) ctx.cookies.set(opts.key, sid, opts);
         }
