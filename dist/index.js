@@ -39,31 +39,32 @@ exports.default = function () {
                             ctx.session = _context4.sent;
 
                         case 8:
+                            _context4.next = 10;
+                            return next();
 
-                            next();
-
+                        case 10:
                             if (!(ctx.session == null)) {
-                                _context4.next = 14;
+                                _context4.next = 15;
                                 break;
                             }
 
-                            _context4.next = 12;
+                            _context4.next = 13;
                             return opts.store.destory(id);
 
-                        case 12:
-                            _context4.next = 18;
+                        case 13:
+                            _context4.next = 19;
                             break;
 
-                        case 14:
-                            _context4.next = 16;
+                        case 15:
+                            _context4.next = 17;
                             return opts.store.set(ctx.session, Object.assign(opts, { sid: id }));
 
-                        case 16:
+                        case 17:
                             sid = _context4.sent;
 
                             if (sid != id) ctx.cookies.set(opts.key, sid, opts);
 
-                        case 18:
+                        case 19:
                         case "end":
                             return _context4.stop();
                     }

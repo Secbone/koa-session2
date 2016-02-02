@@ -59,7 +59,7 @@ export default function(opts = {}) {
             ctx.session = await opts.store.get(id);
         }
 
-        next();
+        await next();
 
         if(ctx.session == null) {
             await opts.store.destory(id);
