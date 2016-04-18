@@ -1,11 +1,11 @@
 "use strict";
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 exports.Store = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 exports.default = function () {
     var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
@@ -61,6 +61,7 @@ exports.default = function () {
 
                         case 17:
                             sid = _context4.sent;
+
 
                             if (sid != id) ctx.cookies.set(opts.key, sid, opts);
 
@@ -136,9 +137,11 @@ var Store = exports.Store = function () {
                 }, _callee, this);
             }));
 
-            return function get(_x) {
+            function get(_x) {
                 return ref.apply(this, arguments);
-            };
+            }
+
+            return get;
         }()
     }, {
         key: "set",
@@ -165,9 +168,11 @@ var Store = exports.Store = function () {
                 }, _callee2, this);
             }));
 
-            return function set(_x2, _x3) {
+            function set(_x2, _x3) {
                 return ref.apply(this, arguments);
-            };
+            }
+
+            return set;
         }()
     }, {
         key: "destory",
@@ -187,9 +192,11 @@ var Store = exports.Store = function () {
                 }, _callee3, this);
             }));
 
-            return function destory(_x4) {
+            function destory(_x4) {
                 return ref.apply(this, arguments);
-            };
+            }
+
+            return destory;
         }()
     }]);
 
