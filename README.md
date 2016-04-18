@@ -74,7 +74,7 @@ app.use(ctx => {
 
 ## Options
 
-Most options like [cookies](https://github.com/pillarjs/cookies#cookiesset-name--value---options--)
+Most options based on [cookies](https://github.com/pillarjs/cookies#cookiesset-name--value---options--)
 
 - `key`: a string for store session id in cookie
 - `store`: a class for custom store (extend {Store}, func: #get(sid), #set(session, opts), #destory(sid))
