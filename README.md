@@ -76,11 +76,9 @@ app.use(ctx => {
 
 Most options like [cookies](https://github.com/pillarjs/cookies#cookiesset-name--value---options--)
 
-#### special
 - `key`: a string for store session id in cookie
 - `store`: a class for custom store (extend {Store}, func: #get(sid), #set(session, opts), #destory(sid))
 
-#### cookies
 - `maxAge`: a number representing the milliseconds from `Date.now()` for expiry
 - `expires`: a `Date` object indicating the cookie's expiration date (expires at the end of session by default).
 - `path`: a string indicating the path of the cookie (`/` by default).
