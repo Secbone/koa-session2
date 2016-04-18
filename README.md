@@ -1,6 +1,7 @@
 # koa-session2
 
 [![NPM version][npm-image]][npm-url]
+[![Build Status][travis-image]][travis-url]
 [![Downloads][downloads-image]][downloads-url]
 
 Middleware for Koa2 to get/set session use with custom stores such as Redis or mongodb with Babel
@@ -87,3 +88,5 @@ MIT
 [npm-url]: https://npmjs.org/package/koa-session2
 [downloads-image]: http://img.shields.io/npm/dm/koa-session2.svg?style=flat-square
 [downloads-url]: https://npmjs.org/package/koa-session2
+[travis-image]: https://img.shields.io/travis/Secbone/koa-session2.svg?style=flat-square
+[travis-url]: https://travis-ci.org/Secbone/koa-session2
