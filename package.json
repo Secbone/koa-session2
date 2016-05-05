@@ -35,6 +35,7 @@
     "gulp": "^3.9.0",
     "gulp-babel": "^6.1.1",
     "koa": "^2.0.0",
+    "koa-router":"^7.0.1",
     "mocha": "^2.4.5",
     "supertest": "^1.2.0"
   }
