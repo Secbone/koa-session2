@@ -57,6 +57,7 @@ export default function(opts = {}) {
             ctx.session = {};
         } else {
             ctx.session = await opts.store.get(id);
+            ctx.session = typeof ctx.session === 'string' ? {} : ctx.session;
         }
 
         await next();

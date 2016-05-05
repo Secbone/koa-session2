@@ -28,7 +28,7 @@ exports.default = function () {
                             }
 
                             ctx.session = {};
-                            _context4.next = 8;
+                            _context4.next = 9;
                             break;
 
                         case 5:
@@ -38,34 +38,36 @@ exports.default = function () {
                         case 7:
                             ctx.session = _context4.sent;
 
-                        case 8:
-                            _context4.next = 10;
+                            ctx.session = typeof ctx.session === 'string' ? {} : ctx.session;
+
+                        case 9:
+                            _context4.next = 11;
                             return next();
 
-                        case 10:
+                        case 11:
                             if (!(ctx.session == null)) {
-                                _context4.next = 15;
+                                _context4.next = 16;
                                 break;
                             }
 
-                            _context4.next = 13;
+                            _context4.next = 14;
                             return opts.store.destory(id);
 
-                        case 13:
-                            _context4.next = 19;
+                        case 14:
+                            _context4.next = 20;
                             break;
 
-                        case 15:
-                            _context4.next = 17;
+                        case 16:
+                            _context4.next = 18;
                             return opts.store.set(ctx.session, Object.assign(opts, { sid: id }));
 
-                        case 17:
+                        case 18:
                             sid = _context4.sent;
 
 
                             if (sid != id) ctx.cookies.set(opts.key, sid, opts);
 
-                        case 19:
+                        case 20:
                         case "end":
                             return _context4.stop();
                     }
