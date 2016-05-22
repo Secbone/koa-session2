@@ -40,7 +40,7 @@ export class Store {
         return opts.sid;
     }
 
-    async destory(sid) {
+    async destroy(sid) {
         delete this.session[sid];
     }
 }
@@ -63,7 +63,7 @@ export default function(opts = {}) {
         await next();
 
         if(ctx.session == null) {
-            await opts.store.destory(id);
+            await opts.store.destroy(id);
         } else {
             let sid = await opts.store.set(ctx.session, Object.assign(opts, {sid: id}));
 

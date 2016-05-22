@@ -51,7 +51,7 @@ exports.default = function () {
                             }
 
                             _context4.next = 14;
-                            return opts.store.destory(id);
+                            return opts.store.destroy(id);
 
                         case 14:
                             _context4.next = 20;
@@ -177,7 +177,7 @@ var Store = exports.Store = function () {
             return set;
         }()
     }, {
-        key: "destory",
+        key: "destroy",
         value: function () {
             var ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(sid) {
                 return regeneratorRuntime.wrap(function _callee3$(_context3) {
@@ -194,11 +194,11 @@ var Store = exports.Store = function () {
                 }, _callee3, this);
             }));
 
-            function destory(_x4) {
+            function destroy(_x4) {
                 return ref.apply(this, arguments);
             }
 
-            return destory;
+            return destroy;
         }()
     }]);
 
