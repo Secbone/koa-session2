@@ -5,8 +5,9 @@ import session, {Store} from "../dist/index.js";
 
 
 class CustomStore extends Store {
-    constructor() {
+    constructor(done) {
         super();
+        this.done = done || function(){};
         this.store = {};
     }
 
@@ -22,8 +23,9 @@ class CustomStore extends Store {
         return opts.sid;
     }
 
-    async destory(sid) {
+    async destroy(sid) {
         delete this.store[sid];
+        this.done();
     }
 }
 
@@ -69,7 +71,7 @@ describe("koa-session2", () => {
             app.use(session({
                 key: "SESSIONID"
             }));
-          
+
             router.post("/message",ctx => {
                 //console.log(typeof ctx.session) // return string
                 ctx.session.message = "something"
@@ -85,7 +87,7 @@ describe("koa-session2", () => {
             //Error : TypeError: Cannot assign to read only property 'message' of
             .set("cookie","SESSIONID="+Store.prototype.getID(24))
             .expect(200,"something",done);
-         
+
         });
     });
 
@@ -107,6 +109,39 @@ describe("koa-session2", () => {
             request(app.listen())
             .get("/")
             .expect(200, done);
+        });
+    });
+
+    describe("when session changed", () => {
+        it("should call destroy", done => {
+            let app = new Koa();
+            let router = Router();
+            app.use(session({
+                // when store destroy methed called, done will be called
+                store: new CustomStore(done)
+            }));
+
+            router.get("/set", ctx => {
+                ctx.session.user = {name: "tom"};
+                ctx.body = "done";
+            })
+            .get("/change", ctx => {
+                ctx.session.user = {name: "jim"};
+                ctx.body = "changed";
+            });
+
+            app.use(router.routes())
+
+
+            let req = request(app.listen());
+            req.get("/set").expect(200, function(err, res){
+                let cookie = res.header['set-cookie'];
+                // change session to refresh 
+                req.get("/change")
+                    .set("Cookie", cookie)
+                    .expect(200)
+                    .end();
+            });
         });
     })
 })

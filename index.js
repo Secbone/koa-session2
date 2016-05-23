@@ -45,7 +45,6 @@ export class Store {
     }
 }
 
-
 export default function(opts = {}) {
     opts.key = opts.key || "koa:sess";
     opts.store = opts.store || new Store();
@@ -60,15 +59,15 @@ export default function(opts = {}) {
             ctx.session = typeof ctx.session === 'string' ? {} : ctx.session;
         }
 
+        let old = JSON.stringify(ctx.session);
+
         await next();
 
-        if(ctx.session == null) {
-            await opts.store.destroy(id);
-        } else {
-            let sid = await opts.store.set(ctx.session, Object.assign(opts, {sid: id}));
-
-            if(sid != id) ctx.cookies.set(opts.key, sid, opts);
+        if(old == JSON.stringify(ctx.session)) return;
+        if(id) await opts.store.destroy(id);
+        if(ctx.session) {
+            let sid = await opts.store.set(ctx.session, opts);
+            ctx.cookies.set(opts.key, sid, opts);
         }
-
     }
 }

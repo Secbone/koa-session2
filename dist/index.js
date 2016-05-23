@@ -15,7 +15,7 @@ exports.default = function () {
 
     return function () {
         var ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(ctx, next) {
-            var id, sid;
+            var id, old, sid;
             return regeneratorRuntime.wrap(function _callee4$(_context4) {
                 while (1) {
                     switch (_context4.prev = _context4.next) {
@@ -41,33 +41,42 @@ exports.default = function () {
                             ctx.session = typeof ctx.session === 'string' ? {} : ctx.session;
 
                         case 9:
-                            _context4.next = 11;
+                            old = JSON.stringify(ctx.session);
+                            _context4.next = 12;
                             return next();
 
-                        case 11:
-                            if (!(ctx.session == null)) {
-                                _context4.next = 16;
+                        case 12:
+                            if (!(old == JSON.stringify(ctx.session))) {
+                                _context4.next = 14;
                                 break;
                             }
 
-                            _context4.next = 14;
-                            return opts.store.destroy(id);
+                            return _context4.abrupt("return");
 
                         case 14:
+                            if (!id) {
+                                _context4.next = 17;
+                                break;
+                            }
+
+                            _context4.next = 17;
+                            return opts.store.destroy(id);
+
+                        case 17:
+                            if (!ctx.session) {
+                                _context4.next = 22;
+                                break;
+                            }
+
                             _context4.next = 20;
-                            break;
-
-                        case 16:
-                            _context4.next = 18;
-                            return opts.store.set(ctx.session, Object.assign(opts, { sid: id }));
-
-                        case 18:
-                            sid = _context4.sent;
-
-
-                            if (sid != id) ctx.cookies.set(opts.key, sid, opts);
+                            return opts.store.set(ctx.session, opts);
 
                         case 20:
+                            sid = _context4.sent;
+
+                            ctx.cookies.set(opts.key, sid, opts);
+
+                        case 22:
                         case "end":
                             return _context4.stop();
                     }
