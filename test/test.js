@@ -136,12 +136,58 @@ describe("koa-session2", () => {
             let req = request(app.listen());
             req.get("/set").expect(200, function(err, res){
                 let cookie = res.header['set-cookie'];
-                // change session to refresh 
+                // change session to refresh
                 req.get("/change")
                     .set("Cookie", cookie)
                     .expect(200)
                     .end();
             });
         });
-    })
-})
+    });
+
+    describe("when session cookie exists but is not in store", () => {
+        let app = new Koa();
+        let router = new Router();
+        let store = new CustomStore();
+        let cookie;
+
+        app.use(session({
+            store
+        }));
+
+        router.get("/setandforget", ctx => {
+          ctx.session.user = {name: "tom"};
+          ctx.body = "done";
+        });
+
+        app.use(router.routes())
+
+        let req = request(app.listen());
+
+        it("should work", done => {
+            req.get("/setandforget").expect(200).end((err, res) => {
+                if (err) return done(err);
+                // save cookie for next test
+                cookie = res.header["set-cookie"];
+                // clear the store
+                for (let key in store.store) {
+                  delete store.store[key];
+                }
+                done();
+            });
+        });
+
+        it("should work even if store cleared", done => {
+            req.get("/setandforget").set("Cookie", cookie).expect(200).end((err, res) => {
+                // cookie should reset and old one deleted when
+                // not found in store - new sid and old session
+                // destroyed
+                if (Object.keys(store.store).length === 1 &&
+                    cookie[0] !== res.header["set-cookie"][0]) {
+                  return done();
+                }
+                done(new Error("error resetting cookie"));
+            });
+        });
+    });
+});
