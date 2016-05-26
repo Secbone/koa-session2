@@ -4,7 +4,7 @@
 [![Build Status][travis-image]][travis-url]
 [![Downloads][downloads-image]][downloads-url]
 
-Middleware for Koa2 to get/set session use with custom stores such as Redis or mongodb with Babel
+Middleware for [Koa2](https://github.com/koajs/koa/tree/v2.x) to get/set session use with custom stores such as Redis or mongodb with [Babel](https://babeljs.io/)
 
 ## Install
 ```
