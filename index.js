@@ -56,10 +56,15 @@ export default function(opts = {}) {
             ctx.session = {};
         } else {
             ctx.session = await opts.store.get(id);
-            ctx.session = typeof ctx.session === 'string' ? {} : ctx.session;
+            ctx.session = typeof ctx.session === "string" ? {} : ctx.session;
         }
 
         let old = JSON.stringify(ctx.session);
+
+        if(!ctx.session) {
+          ctx.session = {};
+          opts.sid = null;
+        }
 
         await next();
 

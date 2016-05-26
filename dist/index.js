@@ -38,45 +38,52 @@ exports.default = function () {
                         case 7:
                             ctx.session = _context4.sent;
 
-                            ctx.session = typeof ctx.session === 'string' ? {} : ctx.session;
+                            ctx.session = typeof ctx.session === "string" ? {} : ctx.session;
 
                         case 9:
                             old = JSON.stringify(ctx.session);
-                            _context4.next = 12;
+
+
+                            if (!ctx.session) {
+                                ctx.session = {};
+                                opts.sid = null;
+                            }
+
+                            _context4.next = 13;
                             return next();
 
-                        case 12:
+                        case 13:
                             if (!(old == JSON.stringify(ctx.session))) {
-                                _context4.next = 14;
+                                _context4.next = 15;
                                 break;
                             }
 
                             return _context4.abrupt("return");
 
-                        case 14:
+                        case 15:
                             if (!id) {
-                                _context4.next = 17;
+                                _context4.next = 18;
                                 break;
                             }
 
-                            _context4.next = 17;
+                            _context4.next = 18;
                             return opts.store.destroy(id);
 
-                        case 17:
+                        case 18:
                             if (!ctx.session) {
-                                _context4.next = 22;
+                                _context4.next = 23;
                                 break;
                             }
 
-                            _context4.next = 20;
+                            _context4.next = 21;
                             return opts.store.set(ctx.session, opts);
 
-                        case 20:
+                        case 21:
                             sid = _context4.sent;
 
                             ctx.cookies.set(opts.key, sid, opts);
 
-                        case 22:
+                        case 23:
                         case "end":
                             return _context4.stop();
                     }
