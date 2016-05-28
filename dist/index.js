@@ -5,7 +5,25 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Store = undefined;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _stringify = require("babel-runtime/core-js/json/stringify");
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+var _regenerator = require("babel-runtime/regenerator");
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = require("babel-runtime/helpers/asyncToGenerator");
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require("babel-runtime/helpers/createClass");
+
+var _createClass3 = _interopRequireDefault(_createClass2);
 
 exports.default = function () {
     var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
@@ -14,9 +32,9 @@ exports.default = function () {
     opts.store = opts.store || new Store();
 
     return function () {
-        var ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee4(ctx, next) {
+        var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(ctx, next) {
             var id, old, sid;
-            return regeneratorRuntime.wrap(function _callee4$(_context4) {
+            return _regenerator2.default.wrap(function _callee4$(_context4) {
                 while (1) {
                     switch (_context4.prev = _context4.next) {
                         case 0:
@@ -41,7 +59,7 @@ exports.default = function () {
                             ctx.session = typeof ctx.session === "string" ? {} : ctx.session;
 
                         case 9:
-                            old = JSON.stringify(ctx.session);
+                            old = (0, _stringify2.default)(ctx.session);
 
 
                             if (!ctx.session) {
@@ -53,7 +71,7 @@ exports.default = function () {
                             return next();
 
                         case 13:
-                            if (!(old == JSON.stringify(ctx.session))) {
+                            if (!(old == (0, _stringify2.default)(ctx.session))) {
                                 _context4.next = 15;
                                 break;
                             }
@@ -90,7 +108,6 @@ exports.default = function () {
                 }
             }, _callee4, this);
         }));
-
         return function (_x6, _x7) {
             return ref.apply(this, arguments);
         };
@@ -103,18 +120,14 @@ var _uidSafe2 = _interopRequireDefault(_uidSafe);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 var Store = exports.Store = function () {
     function Store() {
-        _classCallCheck(this, Store);
+        (0, _classCallCheck3.default)(this, Store);
 
         this.session = {};
     }
 
-    _createClass(Store, [{
+    (0, _createClass3.default)(Store, [{
         key: "decode",
         value: function decode(string) {
             if (!string) return "";
@@ -140,8 +153,8 @@ var Store = exports.Store = function () {
     }, {
         key: "get",
         value: function () {
-            var ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(sid) {
-                return regeneratorRuntime.wrap(function _callee$(_context) {
+            var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(sid) {
+                return _regenerator2.default.wrap(function _callee$(_context) {
                     while (1) {
                         switch (_context.prev = _context.next) {
                             case 0:
@@ -164,8 +177,8 @@ var Store = exports.Store = function () {
     }, {
         key: "set",
         value: function () {
-            var ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee2(session, opts) {
-                return regeneratorRuntime.wrap(function _callee2$(_context2) {
+            var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(session, opts) {
+                return _regenerator2.default.wrap(function _callee2$(_context2) {
                     while (1) {
                         switch (_context2.prev = _context2.next) {
                             case 0:
@@ -174,7 +187,7 @@ var Store = exports.Store = function () {
                                     opts.sid = this.getID(24);
                                 }
 
-                                this.session[opts.sid] = this.encode(JSON.stringify(session));
+                                this.session[opts.sid] = this.encode((0, _stringify2.default)(session));
 
                                 return _context2.abrupt("return", opts.sid);
 
@@ -195,8 +208,8 @@ var Store = exports.Store = function () {
     }, {
         key: "destroy",
         value: function () {
-            var ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee3(sid) {
-                return regeneratorRuntime.wrap(function _callee3$(_context3) {
+            var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(sid) {
+                return _regenerator2.default.wrap(function _callee3$(_context3) {
                     while (1) {
                         switch (_context3.prev = _context3.next) {
                             case 0:
@@ -217,6 +230,5 @@ var Store = exports.Store = function () {
             return destroy;
         }()
     }]);
-
     return Store;
 }();
