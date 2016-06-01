@@ -4,7 +4,10 @@
 [![Build Status][travis-image]][travis-url]
 [![Downloads][downloads-image]][downloads-url]
 
-Middleware for [Koa2](https://github.com/koajs/koa/tree/v2.x) to get/set session use with custom stores such as Redis or mongodb with [Babel](https://babeljs.io/)
+Middleware for [Koa2](https://github.com/koajs/koa/tree/v2.x) to get/set session use with custom stores such as Redis or mongodb
+
+## Babel
+if you are using [Babel](https://babeljs.io/), you can use [this version](https://github.com/Secbone/koa-session2/tree/babel)
 
 ## Install
 ```
@@ -13,8 +16,8 @@ npm install koa-session2
 
 ## Usage
 ```js
-import Koa from "koa";
-import session from "koa-session2";
+const Koa = require("koa");
+const session = require("koa-session2");
 
 const app = new Koa();
 
@@ -27,37 +30,39 @@ app.use(session({
 
 Store.js
 ```js
-import Redis from "ioredis";
-import {Store} from "koa-session2";
+const Redis = require("ioredis");
+const Store = require("koa-session2/libs/store");
 
-export default class RedisStore extends Store {
+class RedisStore extends Store {
     constructor() {
         super();
         this.redis = new Redis();
     }
 
-    async get(sid) {
-        return await this.redis.get(`SESSION:${sid}`);
+    get(sid) {
+        return this.redis.get(`SESSION:${sid}`);
     }
 
-    async set(session, opts) {
+    set(session, opts) {
         if(!opts.sid) {
             opts.sid = this.getID(24);
         }
-        await this.redis.set(`SESSION:${opts.sid}`, session);
-        return opts.sid;
+
+        return this.redis.set(`SESSION:${opts.sid}`, session).then(() => {
+            return opts.sid
+        });
     }
 
-    async destroy(sid) {
-        return await this.redis.del(`SESSION:${sid}`);
+    destroy(sid) {
+        return this.redis.del(`SESSION:${sid}`);
     }
 }
 ```
 main.js
 ```js
-import Koa from "koa";
-import session from "koa-session2";
-import Store from "./Store.js";
+const Koa = require("koa");
+const session = require("koa-session2");
+const Store = require("./Store.js");
 
 const app = new Koa();
 

@@ -1,5 +1,7 @@
 language: node_js
-node_js: stable
+node_js:
+    - "6"
 
 after_success:
-    - bash <(curl -s https://codecov.io/bash)
+    - npm install codecov
+    - ./node_modules/.bin/codecov

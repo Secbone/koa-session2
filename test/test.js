@@ -1,7 +1,8 @@
-import Koa from "koa";
-import Router from 'koa-router';
-import request from "supertest";
-import session, {Store} from "../dist/index.js";
+const Koa = require("koa");
+const Router = require("koa-router");
+const request = require("supertest");
+const session = require("../index.js");
+const Store = require("../libs/store.js");
 
 
 class CustomStore extends Store {
@@ -11,21 +12,22 @@ class CustomStore extends Store {
         this.store = {};
     }
 
-    async get(sid) {
-        return this.store[sid];
+    get(sid) {
+        return Promise.resolve(this.store[sid]);
     }
 
-    async set(session, opts) {
+    set(session, opts) {
         if(!opts.sid) {
             opts.sid = this.getID(24);
         }
         this.store[opts.sid] = session;
-        return opts.sid;
+        return Promise.resolve(opts.sid);
     }
 
-    async destroy(sid) {
+    destroy(sid) {
         delete this.store[sid];
         this.done();
+        return Promise.resolve();
     }
 }
 
