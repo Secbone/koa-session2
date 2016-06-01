@@ -5,6 +5,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Store = undefined;
 
+var _keys = require("babel-runtime/core-js/object/keys");
+
+var _keys2 = _interopRequireDefault(_keys);
+
 var _stringify = require("babel-runtime/core-js/json/stringify");
 
 var _stringify2 = _interopRequireDefault(_stringify);
@@ -88,7 +92,7 @@ exports.default = function () {
                             return opts.store.destroy(id);
 
                         case 18:
-                            if (!ctx.session) {
+                            if (!(ctx.session && (0, _keys2.default)(ctx.session).length)) {
                                 _context4.next = 23;
                                 break;
                             }
