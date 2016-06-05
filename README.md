@@ -6,12 +6,14 @@
 
 Middleware for [Koa2](https://github.com/koajs/koa/tree/v2.x) to get/set session use with custom stores such as Redis or mongodb
 
-## Babel
-if you are using [Babel](https://babeljs.io/), you can use [this version](https://github.com/Secbone/koa-session2/tree/babel)
+Use native ES6 by Nodejs v6.x, no Babel transform.
+
+## Require
+node v6.x +
 
 ## Install
 ```
-npm install koa-session2
+npm install koa-session2@node6
 ```
 
 ## Usage
