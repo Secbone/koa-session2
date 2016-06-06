@@ -41,5 +41,8 @@
     "koa-router": "^7.0.1",
     "mocha": "^2.5.1",
     "supertest": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=4.0.0"
   }
 }
