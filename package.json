@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "gulp",
-    "test": "node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec"
+    "test": "mocha",
+    "test-cov": "node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec"
   },
   "repository": {
     "type": "git",
@@ -32,10 +33,12 @@
     "tag": "node6"
   },
   "devDependencies": {
-    "istanbul": "^0.4.3",
     "koa": "^2.0.0",
     "koa-router": "^7.0.1",
     "mocha": "^2.5.1",
     "supertest": "^1.2.0"
+  },
+  "engines": {
+    "node": ">=6.0.0"
   }
 }
