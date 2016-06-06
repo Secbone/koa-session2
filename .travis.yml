@@ -2,7 +2,7 @@ language: node_js
 node_js:
     - "6"
 
-install:
+before_script:
     - npm install istanbul
 
 script:
