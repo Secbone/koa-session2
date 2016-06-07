@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "gulp",
-    "test": "mocha --compilers js:babel-register --require babel-polyfill"
+    "test": "mocha --compilers js:babel-register --require babel-polyfill",
+    "test-cov": "node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec --compilers js:babel-register --require babel-polyfill"
   },
   "repository": {
     "type": "git",
