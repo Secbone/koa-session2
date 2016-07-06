@@ -70,6 +70,7 @@ export default function(opts = {}) {
 
         if(old == JSON.stringify(ctx.session)) return;
         if(id) await opts.store.destroy(id);
+        opts.sid = id;
         if(ctx.session && Object.keys(ctx.session).length) {
             let sid = await opts.store.set(ctx.session, opts);
             ctx.cookies.set(opts.key, sid, opts);
