@@ -82,21 +82,20 @@ describe("koa-session2", () => {
                 key: "SESSIONID"
             }));
 
-            router.post("/message",ctx => {
-                //console.log(typeof ctx.session) // return string
+            router.post("/message", ctx => {
                 ctx.session.message = "something"
                 ctx.body = ctx.session.message;
             });
 
-            app.use(router.routes(),router.allowedMethods());
+            app.use(router.routes(), router.allowedMethods());
 
-             request(app.listen())
+            request(app.listen())
             .post("/message")
             //In browser the cookie will be remained old SESSIONID value.
             //Store session will returned string type
             //Error : TypeError: Cannot assign to read only property 'message' of
-            .set("cookie","SESSIONID="+Store.prototype.getID(24))
-            .expect(200,"something",done);
+            .set("cookie", "SESSIONID=" + Store.prototype.getID(24))
+            .expect(200, "something", done);
 
         });
     });
@@ -200,5 +199,5 @@ describe("koa-session2", () => {
             });
         });
     });
-    
+
 });
