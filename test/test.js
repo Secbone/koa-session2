@@ -32,30 +32,22 @@ class CustomStore extends Store {
 }
 
 describe("koa-session2", () => {
-    describe("when default", () => {
+    describe("when use default default", () => {
+        let app = new Koa();
+        app.use(session());
+
+        app.use(ctx => {
+            ctx.session.user = "tom";
+            ctx.body = ctx.session;
+        });
+
         it("should be work", done => {
-            let app = new Koa();
-            app.use(session());
-
-            app.use(ctx => {
-                ctx.session.user = "tom";
-                ctx.body = ctx.session;
-            });
-
             request(app.listen())
             .get("/")
             .expect(200, done);
         });
 
         it("should set cookies", done => {
-            let app = new Koa();
-            app.use(session());
-
-            app.use(ctx => {
-                ctx.session.message = "something";
-                ctx.body = ctx.session;
-            });
-
             request(app.listen())
             .get("/")
             .expect("Set-Cookie", /koa:sess/)
@@ -63,6 +55,24 @@ describe("koa-session2", () => {
                 if(err) done(err);
                 let cookie = res.header["set-cookie"].join(";");
                 done();
+            });
+        });
+
+        it("should work when multiple clients access", done => {
+            let client = request(app.listen());
+
+            client.get("/").end((err_1, res_1) => {
+                let cookie_1 = res_1.header['set-cookie'];
+
+                // when a new client without cookie access server
+                // should set a new session and new cookie to the client
+                // not overwrite the old
+
+                client.get("/").end((err_2, res_2) => {
+                    let cookie_2 = res_2.header['set-cookie'];
+
+                    if (cookie_1 != cookie_2) done();
+                });
             });
         });
 
@@ -82,7 +92,7 @@ describe("koa-session2", () => {
 
             app.use(router.routes(),router.allowedMethods());
 
-             request(app.listen())
+            request(app.listen())
             .post("/message")
             //In browser the cookie will be remained old SESSIONID value.
             //Store session will returned string type
@@ -94,7 +104,7 @@ describe("koa-session2", () => {
     });
 
     describe("when use custom store", () => {
-        it("should be work", done => {
+        it("should work", done => {
             let app = new Koa();
             app.use(session({
                 store: new CustomStore()

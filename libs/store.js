@@ -33,13 +33,14 @@ class Store {
 
     set(session, opts) {
         opts = opts || {};
-        if(!opts.sid) {
-            opts.sid = this.getID(24);
+        let sid = opts.sid;
+        if(!sid) {
+            sid = this.getID(24);
         }
 
-        this.session[opts.sid] = this.encode(JSON.stringify(session));
+        this.session[sid] = this.encode(JSON.stringify(session));
 
-        return Promise.resolve(opts.sid);
+        return Promise.resolve(sid);
     }
 
     destroy(sid) {
