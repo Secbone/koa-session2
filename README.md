@@ -42,7 +42,7 @@ class RedisStore extends Store {
     }
 
     get(sid) {
-        return this.redis.get(`SESSION:${sid}`);
+        return this.redis.get(`SESSION:${sid}`).then(data => JSON.parse(data));
     }
 
     set(session, opts) {
@@ -50,7 +50,7 @@ class RedisStore extends Store {
             opts.sid = this.getID(24);
         }
 
-        return this.redis.set(`SESSION:${opts.sid}`, session).then(() => {
+        return this.redis.set(`SESSION:${opts.sid}`, JSON.stringify(session)).then(() => {
             return opts.sid
         });
     }
