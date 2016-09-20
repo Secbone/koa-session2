@@ -1,8 +1,8 @@
 {
   "name": "koa-session2",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Middleware for Koa2 to get/set session use with custom stores such as Redis or mongodb",
-  "main": "dist/index.js",
+  "main": "index.js",
   "scripts": {
     "build": "gulp",
     "test": "mocha",
