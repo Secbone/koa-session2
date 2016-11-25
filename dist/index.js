@@ -38,13 +38,13 @@ var _createClass2 = require("babel-runtime/helpers/createClass");
 var _createClass3 = _interopRequireDefault(_createClass2);
 
 exports.default = function () {
-    var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
     opts.key = opts.key || "koa:sess";
     opts.store = opts.store || new Store();
 
     return function () {
-        var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(ctx, next) {
+        var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(ctx, next) {
             var id, old, sid;
             return _regenerator2.default.wrap(function _callee4$(_context4) {
                 while (1) {
@@ -68,11 +68,10 @@ exports.default = function () {
                         case 7:
                             ctx.session = _context4.sent;
 
-                            // check session should be a object not null
+                            // check session should be a no-null object
                             if ((0, _typeof3.default)(ctx.session) !== "object" || ctx.session == null) {
                                 ctx.session = {};
                             }
-                            // ctx.session = typeof ctx.session === "string" ? {} : ctx.session;
 
                         case 9:
                             old = (0, _stringify2.default)(ctx.session);
@@ -101,7 +100,7 @@ exports.default = function () {
 
                         case 18:
                             if (!(ctx.session && (0, _keys2.default)(ctx.session).length)) {
-                                _context4.next = 23;
+                                _context4.next = 25;
                                 break;
                             }
 
@@ -112,16 +111,31 @@ exports.default = function () {
                             sid = _context4.sent;
 
                             ctx.cookies.set(opts.key, sid, opts);
+                            _context4.next = 29;
+                            break;
 
-                        case 23:
+                        case 25:
+                            if (!(ctx.session === null || ctx.session === undefined)) {
+                                _context4.next = 29;
+                                break;
+                            }
+
+                            _context4.next = 28;
+                            return opts.store.destroy(id);
+
+                        case 28:
+                            ctx.cookies.set(opts.key);
+
+                        case 29:
                         case "end":
                             return _context4.stop();
                     }
                 }
             }, _callee4, this);
         }));
+
         return function (_x6, _x7) {
-            return ref.apply(this, arguments);
+            return _ref4.apply(this, arguments);
         };
     }();
 };
@@ -165,7 +179,7 @@ var Store = exports.Store = function () {
     }, {
         key: "get",
         value: function () {
-            var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(sid) {
+            var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(sid) {
                 return _regenerator2.default.wrap(function _callee$(_context) {
                     while (1) {
                         switch (_context.prev = _context.next) {
@@ -181,7 +195,7 @@ var Store = exports.Store = function () {
             }));
 
             function get(_x) {
-                return ref.apply(this, arguments);
+                return _ref.apply(this, arguments);
             }
 
             return get;
@@ -189,7 +203,7 @@ var Store = exports.Store = function () {
     }, {
         key: "set",
         value: function () {
-            var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(session, opts) {
+            var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(session, opts) {
                 var sid;
                 return _regenerator2.default.wrap(function _callee2$(_context2) {
                     while (1) {
@@ -215,7 +229,7 @@ var Store = exports.Store = function () {
             }));
 
             function set(_x2, _x3) {
-                return ref.apply(this, arguments);
+                return _ref2.apply(this, arguments);
             }
 
             return set;
@@ -223,7 +237,7 @@ var Store = exports.Store = function () {
     }, {
         key: "destroy",
         value: function () {
-            var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(sid) {
+            var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(sid) {
                 return _regenerator2.default.wrap(function _callee3$(_context3) {
                     while (1) {
                         switch (_context3.prev = _context3.next) {
@@ -239,7 +253,7 @@ var Store = exports.Store = function () {
             }));
 
             function destroy(_x4) {
-                return ref.apply(this, arguments);
+                return _ref3.apply(this, arguments);
             }
 
             return destroy;
