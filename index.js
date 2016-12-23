@@ -32,21 +32,19 @@ module.exports = (opts = {}) => {
             // no modify
             if(old == JSON.stringify(ctx.session)) return;
 
-            return Promise.resolve().then(() => {
-                // destory old session
-                if(id) {
-                    id = null;
-                    return opts.store.destroy(id);
-                }
-            }).then(() => {
+            // destory old session
+            if(id) return opts.store.destroy(id);
+            
+        }).then(() => {
+            // clear id
+            id = null;
 
-                if(ctx.session && Object.keys(ctx.session).length) {
-                    // set new session
-                    return opts.store.set(ctx.session, Object.assign({}, opts, {sid: id})).then(sid => {
-                        ctx.cookies.set(opts.key, sid, opts)
-                    });
-                }
-            });
+            if(ctx.session && Object.keys(ctx.session).length) {
+                // set new session
+                return opts.store.set(ctx.session, Object.assign({}, opts, {sid: id})).then(sid => {
+                    ctx.cookies.set(opts.key, sid, opts)
+                });
+            }
         });
 
     }
