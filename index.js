@@ -36,14 +36,14 @@ module.exports = (opts = {}) => {
             if(id) return opts.store.destroy(id).then(() => {
                 // clear id
                 id = null;
-
-                if(ctx.session && Object.keys(ctx.session).length) {
-                    // set new session
-                    return opts.store.set(ctx.session, Object.assign({}, opts, {sid: id})).then(sid => {
-                        ctx.cookies.set(opts.key, sid, opts)
-                    });
-                }
             });
+
+            if(ctx.session && Object.keys(ctx.session).length) {
+                // set new session
+                return opts.store.set(ctx.session, Object.assign({}, opts, {sid: id})).then(sid => {
+                    ctx.cookies.set(opts.key, sid, opts)
+                });
+            }
         });
     }
 };
