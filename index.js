@@ -33,7 +33,7 @@ module.exports = (opts = {}) => {
             if(old == JSON.stringify(ctx.session)) return;
 
             // destory old session
-            if(id) return opts.store.destroy(id).then(() => {
+            if (id) opts.store.destroy(id).then(() => {
                 // clear id
                 id = null;
             });
