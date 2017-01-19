@@ -34,8 +34,7 @@ module.exports = (opts = {}) => {
 
             // destory old session
             if(id) return opts.store.destroy(id);
-            
-        }).then(() => {
+
             // clear id
             id = null;
 
@@ -46,6 +45,5 @@ module.exports = (opts = {}) => {
                 });
             }
         });
-
     }
 };
