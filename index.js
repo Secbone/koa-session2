@@ -30,29 +30,21 @@ module.exports = (opts = {}) => {
             return next();
         }).then(() => {
             // no modify
-            if(old == JSON.stringify(ctx.session)) return;
+            if(old == JSON.stringify(ctx.session)) throw new Error();
 
             // destory old session
-            if(id) {
-                opts.store.destroy(id).then(() => {
-                // clear id
-                id = null;
+            if(id) return opts.store.destroy(id);
 
-                if(ctx.session && Object.keys(ctx.session).length) {
-                    // set new session
-                    return opts.store.set(ctx.session, Object.assign({}, opts, {sid: id})).then(sid => {
-                        ctx.cookies.set(opts.key, sid, opts)
-                    });
-                }
-            });
-            } else {
-                if(ctx.session && Object.keys(ctx.session).length) {
-                    // set new session
-                    return opts.store.set(ctx.session, Object.assign({}, opts, {sid: id})).then(sid => {
-                        ctx.cookies.set(opts.key, sid, opts)
-                    });
-                }
+        }).then(() => {
+            // clear id
+            id = null;
+
+            if(ctx.session && Object.keys(ctx.session).length) {
+                // set new session
+                return opts.store.set(ctx.session, Object.assign({}, opts, {sid: id})).then(sid => {
+                    ctx.cookies.set(opts.key, sid, opts)
+                });
             }
-        });
+        }).catch(err => {});
     }
 };
