@@ -6,7 +6,7 @@
   "scripts": {
     "build": "gulp",
     "test": "mocha --harmony",
-    "test-cov": "node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec"
+    "test-cov": "node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --harmony --report lcovonly -- -R spec"
   },
   "repository": {
     "type": "git",
