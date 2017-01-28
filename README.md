@@ -41,22 +41,21 @@ class RedisStore extends Store {
         this.redis = new Redis();
     }
 
-    get(sid) {
-        return this.redis.get(`SESSION:${sid}`).then(data => JSON.parse(data));
+    async get(sid) {
+        let data = await this.redis.get(`SESSION:${sid}`);
+        return JSON.parse(data);
     }
 
-    set(session, opts) {
+    async set(session, opts) {
         if(!opts.sid) {
             opts.sid = this.getID(24);
         }
-
-        return this.redis.set(`SESSION:${opts.sid}`, JSON.stringify(session)).then(() => {
-            return opts.sid
-        });
+        await this.redis.set(`SESSION:${opts.sid}`, JSON.stringify(session));
+        return opts.sid;
     }
 
     destroy(sid) {
-        return this.redis.del(`SESSION:${sid}`);
+        return await this.redis.del(`SESSION:${sid}`);
     }
 }
 ```
