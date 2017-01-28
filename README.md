@@ -7,7 +7,9 @@
 
 Middleware for [Koa2](https://github.com/koajs/koa/tree/v2.x) to get/set session use with custom stores such as Redis or mongodb with [Babel](https://babeljs.io/)
 
-If you are not using babel in your projects, maybe you can try [this version](https://github.com/Secbone/koa-session2/tree/node6) without babel.
+If you are not using babel in your projects, maybe you can try these versions without babel.
+- [node6](https://github.com/Secbone/koa-session2/tree/node6)
+- [node7](https://github.com/Secbone/koa-session2/tree/node7) 
 
 ## Install
 ```
