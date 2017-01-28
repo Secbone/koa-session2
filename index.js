@@ -1,52 +1,8 @@
-import uid from "uid-safe";
+"use strict"
 
-export class Store {
-    constructor() {
-        this.session = {};
-    }
+const Store = require('./libs/store.js');
 
-    decode(string) {
-        if(!string) return "";
-
-        let session = "";
-
-        try{
-            session = new Buffer(string, "base64").toString();
-        } catch(e) {}
-
-        return JSON.parse(session);
-    }
-
-    encode(obj) {
-        return new Buffer(obj).toString("base64");
-    }
-
-    getID(length) {
-        return uid.sync(length);
-    }
-
-    async get(sid) {
-        return this.decode(this.session[sid]);
-    }
-
-    async set(session, opts) {
-        opts = opts || {};
-        let sid = opts.sid;
-        if(!sid) {
-            sid = this.getID(24);
-        }
-
-        this.session[sid] = this.encode(JSON.stringify(session));
-
-        return sid;
-    }
-
-    async destroy(sid) {
-        delete this.session[sid];
-    }
-}
-
-export default function(opts = {}) {
+module.exports = function(opts = {}) {
     opts.key = opts.key || "koa:sess";
     opts.store = opts.store || new Store();
 

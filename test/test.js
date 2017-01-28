@@ -1,7 +1,10 @@
-import Koa from "koa";
-import Router from 'koa-router';
-import request from "supertest";
-import session, {Store} from "../dist/index.js";
+"use strict"
+
+const Koa = require('koa');
+const Router = require('koa-router');
+const request = require('supertest');
+const session = require('../index.js');
+const Store = require('../libs/store.js');
 
 
 class CustomStore extends Store {
