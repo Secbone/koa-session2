@@ -30,11 +30,11 @@ module.exports = (opts = {}) => {
             return next();
         }).then(() => {
             // no modify
-            if(old == JSON.stringify(ctx.session)) return;
+            if(old == JSON.stringify(ctx.session)) throw new Error();
 
             // destory old session
             if(id) return opts.store.destroy(id);
-            
+
         }).then(() => {
             // clear id
             id = null;
@@ -45,7 +45,6 @@ module.exports = (opts = {}) => {
                     ctx.cookies.set(opts.key, sid, opts)
                 });
             }
-        });
-
+        }).catch(err => {});
     }
 };
