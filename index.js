@@ -80,6 +80,9 @@ export default function(opts = {}) {
         if(ctx.session && Object.keys(ctx.session).length) {
             let sid = await opts.store.set(ctx.session, Object.assign({}, opts, {sid: id}));
             ctx.cookies.set(opts.key, sid, opts);
+        } else if(ctx.session === null || ctx.session === undefined) {
+            await opts.store.destroy(id);
+            ctx.cookies.set(opts.key);
         }
     }
 }

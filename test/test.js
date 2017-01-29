@@ -152,6 +152,36 @@ describe("koa-session2", () => {
                     .end();
             });
         });
+        it("should destroy session when assign ctx.session to null or undefined", done => {
+            let app = new Koa();
+            let router = Router();
+            const store = new CustomStore()
+            app.use(session({ store }));
+            router.get("/set", ctx => {
+                ctx.session.user = { name: "joyent" };
+                ctx.body = "done";
+            })
+            .get("/remove/by/null", ctx => {
+                if(!ctx.session.user || ctx.session.user.name !== "joyent") {
+                    throw new Error("session not set");
+                }
+                ctx.session = null;
+                ctx.body = 'removed';
+            });
+            app.use(router.routes());
+            let req = request(app.listen());
+            req.get("/set").expect(200, function(err, res){
+                let cookie = res.header['set-cookie'];
+                req.get("/remove/by/null")
+                    .set("Cookie", cookie)
+                    .expect(200, function(err, res){
+                        if(Object.keys(store.store).length != 0) {
+                            throw new Error("session is not deleted")
+                        }
+                        done()
+                    });
+            });
+        });
     });
 
     describe("when session cookie exists but is not in store", () => {
