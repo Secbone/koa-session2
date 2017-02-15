@@ -54,10 +54,12 @@ class RedisStore extends Store {
         return opts.sid;
     }
 
-    destroy(sid) {
+    async destroy(sid) {
         return await this.redis.del(`SESSION:${sid}`);
     }
 }
+
+module.exports = RedisStore;
 ```
 main.js
 ```js
