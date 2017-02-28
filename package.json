@@ -43,6 +43,9 @@
     "mocha": "^2.5.1",
     "supertest": "^1.2.0"
   },
+  "publishConfig": {
+    "tag": "babel"
+  },
   "engines": {
     "node": ">=4.0.0"
   }
