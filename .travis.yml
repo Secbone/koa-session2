@@ -1,11 +1,9 @@
 language: node_js
 node_js:
-    - "4"
-    - "5"
-    - "6"
+    - "7"
 
 before_script:
-    - npm install istanbul@1.0.0-alpha.2
+    - npm install istanbul
 
 script:
     - npm run test-cov

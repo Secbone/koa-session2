@@ -3,13 +3,17 @@
 [![NPM version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
 [![Downloads][downloads-image]][downloads-url]
-[![Test coverage][codecov-image]][codecov-url]
 
-Middleware for [Koa2](https://github.com/koajs/koa/tree/v2.x) to get/set session use with custom stores such as Redis or mongodb with [Babel](https://babeljs.io/)
+Middleware for [Koa2](https://github.com/koajs/koa) to get/set session use with custom stores such as Redis or mongodb
 
-If you are not using babel in your projects, maybe you can try these versions without babel.
+Use native ES6(async/await) by Nodejs v7.x, use `--harmony` option.
+
+Or you can use the old versions:
+- [babel](https://github.com/Secbone/koa-session2/tree/babel)
 - [node6](https://github.com/Secbone/koa-session2/tree/node6)
-- [node7](https://github.com/Secbone/koa-session2/tree/node7) 
+
+## Require
+node v7.x +
 
 ## Install
 ```
@@ -18,8 +22,8 @@ npm install koa-session2
 
 ## Usage
 ```js
-import Koa from "koa";
-import session from "koa-session2";
+const Koa = require("koa");
+const session = require("koa-session2");
 
 const app = new Koa();
 
@@ -32,10 +36,10 @@ app.use(session({
 
 Store.js
 ```js
-import Redis from "ioredis";
-import {Store} from "koa-session2";
+const Redis = require("ioredis");
+const Store = require("koa-session2/libs/store");
 
-export default class RedisStore extends Store {
+class RedisStore extends Store {
     constructor() {
         super();
         this.redis = new Redis();
@@ -58,12 +62,14 @@ export default class RedisStore extends Store {
         return await this.redis.del(`SESSION:${sid}`);
     }
 }
+
+module.exports = RedisStore;
 ```
 main.js
 ```js
-import Koa from "koa";
-import session from "koa-session2";
-import Store from "./Store.js";
+const Koa = require("koa");
+const session = require("koa-session2");
+const Store = require("./Store.js");
 
 const app = new Koa();
 
@@ -105,5 +111,3 @@ MIT
 [downloads-url]: https://npmjs.org/package/koa-session2
 [travis-image]: https://img.shields.io/travis/Secbone/koa-session2.svg?style=flat-square
 [travis-url]: https://travis-ci.org/Secbone/koa-session2
-[codecov-image]: https://img.shields.io/codecov/c/github/Secbone/koa-session2.svg?style=flat-square
-[codecov-url]: https://codecov.io/gh/Secbone/koa-session2
