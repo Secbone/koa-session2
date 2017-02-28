@@ -4,7 +4,7 @@
 [![Build Status][travis-image]][travis-url]
 [![Downloads][downloads-image]][downloads-url]
 
-Middleware for [Koa2](https://github.com/koajs/koa/tree/v2.x) to get/set session use with custom stores such as Redis or mongodb
+Middleware for [Koa2](https://github.com/koajs/koa) to get/set session use with custom stores such as Redis or mongodb
 
 Use native ES6(async/await) by Nodejs v7.x, use `--harmony` option.
 
@@ -13,7 +13,7 @@ node v7.x +
 
 ## Install
 ```
-npm install koa-session2@node7
+npm install koa-session2
 ```
 
 ## Usage
