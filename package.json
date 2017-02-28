@@ -1,6 +1,6 @@
 {
   "name": "koa-session2",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Middleware for Koa2 to get/set session use with custom stores such as Redis or mongodb with Babel",
   "main": "dist/index.js",
   "scripts": {
@@ -26,9 +26,6 @@
     "url": "https://github.com/Secbone/koa-session2/issues"
   },
   "homepage": "https://github.com/Secbone/koa-session2#readme",
-  "publishConfig": {
-    "tag": "node7"
-  },
   "dependencies": {
     "uid-safe": "^2.1.1"
   },

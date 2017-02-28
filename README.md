@@ -8,6 +8,10 @@ Middleware for [Koa2](https://github.com/koajs/koa) to get/set session use with 
 
 Use native ES6(async/await) by Nodejs v7.x, use `--harmony` option.
 
+Or you can use the old versions:
+- [babel](https://github.com/Secbone/koa-session2/tree/babel)
+- [node6](https://github.com/Secbone/koa-session2/tree/node6)
+
 ## Require
 node v7.x +
 
