@@ -13,7 +13,7 @@ If you are not using babel in your projects, maybe you can try these versions wi
 
 ## Install
 ```
-npm install koa-session2
+npm install koa-session2@babel
 ```
 
 ## Usage
