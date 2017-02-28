@@ -31,13 +31,14 @@ export class Store {
 
     async set(session, opts) {
         opts = opts || {};
-        if(!opts.sid) {
-            opts.sid = this.getID(24);
+        let sid = opts.sid;
+        if(!sid) {
+            sid = this.getID(24);
         }
 
-        this.session[opts.sid] = this.encode(JSON.stringify(session));
+        this.session[sid] = this.encode(JSON.stringify(session));
 
-        return opts.sid;
+        return sid;
     }
 
     async destroy(sid) {
@@ -56,22 +57,28 @@ export default function(opts = {}) {
             ctx.session = {};
         } else {
             ctx.session = await opts.store.get(id);
-            ctx.session = typeof ctx.session === "string" ? {} : ctx.session;
+            // check session should be a no-null object
+            if(typeof ctx.session !== "object" || ctx.session == null) {
+                ctx.session = {};
+            }
         }
 
         let old = JSON.stringify(ctx.session);
 
-        if(!ctx.session) {
-          ctx.session = {};
-          opts.sid = null;
-        }
-
         await next();
 
+        // if not changed
         if(old == JSON.stringify(ctx.session)) return;
-        if(id) await opts.store.destroy(id);
+
+        // clear old session if exists
+        if(id) {
+            await opts.store.destroy(id);
+            id = null;
+        }
+
+        // set new session
         if(ctx.session && Object.keys(ctx.session).length) {
-            let sid = await opts.store.set(ctx.session, opts);
+            let sid = await opts.store.set(ctx.session, Object.assign({}, opts, {sid: id}));
             ctx.cookies.set(opts.key, sid, opts);
         }
     }

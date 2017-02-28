@@ -5,9 +5,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Store = undefined;
 
+var _assign = require("babel-runtime/core-js/object/assign");
+
+var _assign2 = _interopRequireDefault(_assign);
+
 var _keys = require("babel-runtime/core-js/object/keys");
 
 var _keys2 = _interopRequireDefault(_keys);
+
+var _typeof2 = require("babel-runtime/helpers/typeof");
+
+var _typeof3 = _interopRequireDefault(_typeof2);
 
 var _stringify = require("babel-runtime/core-js/json/stringify");
 
@@ -60,36 +68,36 @@ exports.default = function () {
                         case 7:
                             ctx.session = _context4.sent;
 
-                            ctx.session = typeof ctx.session === "string" ? {} : ctx.session;
+                            // check session should be a object not null
+                            if ((0, _typeof3.default)(ctx.session) !== "object" || ctx.session == null) {
+                                ctx.session = {};
+                            }
+                            // ctx.session = typeof ctx.session === "string" ? {} : ctx.session;
 
                         case 9:
                             old = (0, _stringify2.default)(ctx.session);
-
-
-                            if (!ctx.session) {
-                                ctx.session = {};
-                                opts.sid = null;
-                            }
-
-                            _context4.next = 13;
+                            _context4.next = 12;
                             return next();
 
-                        case 13:
+                        case 12:
                             if (!(old == (0, _stringify2.default)(ctx.session))) {
-                                _context4.next = 15;
+                                _context4.next = 14;
                                 break;
                             }
 
                             return _context4.abrupt("return");
 
-                        case 15:
+                        case 14:
                             if (!id) {
                                 _context4.next = 18;
                                 break;
                             }
 
-                            _context4.next = 18;
+                            _context4.next = 17;
                             return opts.store.destroy(id);
+
+                        case 17:
+                            id = null;
 
                         case 18:
                             if (!(ctx.session && (0, _keys2.default)(ctx.session).length)) {
@@ -98,7 +106,7 @@ exports.default = function () {
                             }
 
                             _context4.next = 21;
-                            return opts.store.set(ctx.session, opts);
+                            return opts.store.set(ctx.session, (0, _assign2.default)({}, opts, { sid: id }));
 
                         case 21:
                             sid = _context4.sent;
@@ -182,20 +190,23 @@ var Store = exports.Store = function () {
         key: "set",
         value: function () {
             var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(session, opts) {
+                var sid;
                 return _regenerator2.default.wrap(function _callee2$(_context2) {
                     while (1) {
                         switch (_context2.prev = _context2.next) {
                             case 0:
                                 opts = opts || {};
-                                if (!opts.sid) {
-                                    opts.sid = this.getID(24);
+                                sid = opts.sid;
+
+                                if (!sid) {
+                                    sid = this.getID(24);
                                 }
 
-                                this.session[opts.sid] = this.encode((0, _stringify2.default)(session));
+                                this.session[sid] = this.encode((0, _stringify2.default)(session));
 
-                                return _context2.abrupt("return", opts.sid);
+                                return _context2.abrupt("return", sid);
 
-                            case 4:
+                            case 5:
                             case "end":
                                 return _context2.stop();
                         }
