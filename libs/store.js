@@ -8,15 +8,15 @@ class Store {
     }
 
     decode(string) {
-        if(!string) return "";
+        if(typeof string !== "string") return "";
 
         let session = "";
 
         try{
-            session = new Buffer(string, "base64").toString();
+            session = JSON.parse(new Buffer(string, "base64").toString());
         } catch(e) {}
 
-        return JSON.parse(session);
+        return session;
     }
 
     encode(obj) {
