@@ -1,25 +1,22 @@
-"use strict"
-
 const Store = require('./libs/store.js');
 
-module.exports = function(opts = {}) {
-    opts.key = opts.key || "koa:sess";
-    opts.store = opts.store || new Store();
+module.exports = (opts = {}) => {
+    const { key = "koa:sess", store = new Store() } = opts;
 
-    return async function(ctx, next) {
-        let id = ctx.cookies.get(opts.key, opts);
+    return async (ctx, next) => {
+        let id = ctx.cookies.get(key, opts);
 
         if(!id) {
             ctx.session = {};
         } else {
-            ctx.session = await opts.store.get(id);
+            ctx.session = await store.get(id);
             // check session should be a no-null object
             if(typeof ctx.session !== "object" || ctx.session == null) {
                 ctx.session = {};
             }
         }
 
-        let old = JSON.stringify(ctx.session);
+        const old = JSON.stringify(ctx.session);
 
         await next();
 
@@ -28,14 +25,14 @@ module.exports = function(opts = {}) {
 
         // clear old session if exists
         if(id) {
-            await opts.store.destroy(id);
+            await store.destroy(id);
             id = null;
         }
 
         // set new session
         if(ctx.session && Object.keys(ctx.session).length) {
-            let sid = await opts.store.set(ctx.session, Object.assign({}, opts, {sid: id}));
-            ctx.cookies.set(opts.key, sid, opts);
+            const sid = await store.set(ctx.session, Object.assign({}, opts, {sid: id}));
+            ctx.cookies.set(key, sid, opts);
         }
     }
 }
