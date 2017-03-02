@@ -1,6 +1,6 @@
 "use strict"
 
-const uid = require("uid-safe");
+const { randomBytes } = require('crypto');
 
 class Store {
     constructor() {
@@ -24,7 +24,7 @@ class Store {
     }
 
     getID(length) {
-        return uid.sync(length);
+        return randomBytes(length).toString('hex');
     }
 
     async get(sid) {

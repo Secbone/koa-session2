@@ -26,9 +26,7 @@
     "url": "https://github.com/Secbone/koa-session2/issues"
   },
   "homepage": "https://github.com/Secbone/koa-session2#readme",
-  "dependencies": {
-    "uid-safe": "^2.1.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "koa": "^2.0.0",
     "koa-router": "^7.0.1",
