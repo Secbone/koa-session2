@@ -10,7 +10,7 @@ module.exports = (opts = {}) => {
             ctx.session = {};
         } else {
             ctx.session = await store.get(id);
-            // check session should be a no-null object
+            // check session must be a no-null object
             if(typeof ctx.session !== "object" || ctx.session == null) {
                 ctx.session = {};
             }
@@ -26,7 +26,8 @@ module.exports = (opts = {}) => {
         // clear old session if exists
         if(id) {
             await store.destroy(id);
-            id = null;
+            // set it to undefined instead of null to be able to use default parameters at Store
+            id = undefined;
         }
 
         // set new session
@@ -36,3 +37,6 @@ module.exports = (opts = {}) => {
         }
     }
 }
+
+// Reeexport Store to not use reference to internal files
+module.exports.Store = Store;

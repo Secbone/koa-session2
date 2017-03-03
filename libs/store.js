@@ -1,50 +1,38 @@
-"use strict"
-
 const { randomBytes } = require('crypto');
 
 class Store {
     constructor() {
-        this.session = {};
-    }
-
-    decode(string) {
-        if(typeof string !== "string") return "";
-
-        let session = "";
-
-        try{
-            session = JSON.parse(new Buffer(string, "base64").toString());
-        } catch(e) {}
-
-        return session;
-    }
-
-    encode(obj) {
-        return new Buffer(obj).toString("base64");
+        this.sessions = new Map();
     }
 
     getID(length) {
         return randomBytes(length).toString('hex');
     }
 
-    async get(sid) {
-        return this.decode(this.session[sid]);
+    get(sid) {
+        if (!this.sessions.has(sid)) return undefined;
+        // We are decoding data coming from our Store, so, we assume it was sanitized before storing
+        return JSON.parse(this.sessions.get(sid));
     }
 
-    async set(session, opts) {
-        opts = opts || {};
-        let sid = opts.sid;
-        if(!sid) {
-            sid = this.getID(24);
+    set(session, { sid =  this.getID(24), maxAge } = {}) {
+        // Just a demo how to use maxAge and some cleanup
+        if (this.sessions.has(sid)) {
+            const { __timeout } = this.sessions.get(sid);
+            if (__timeout) clearTimeout(__timeout);
         }
 
-        this.session[sid] = this.encode(JSON.stringify(session));
-
+        if (maxAge) session.__timeout = setTimeout(() => this.destroy(sid), maxAge);
+        try {
+            // JSON.stringify throws on some conditional, such as circular reference
+            this.sessions.set(sid) = JSON.stringify(session);
+        } catch (err) {}
+        
         return sid;
     }
 
-    async destroy(sid) {
-        delete this.session[sid];
+    destroy(sid) {
+        this.sessions.delete(sid);
     }
 }
 
