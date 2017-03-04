@@ -59,6 +59,23 @@ describe("koa-session2", () => {
             });
         });
 
+        it("should get the correct session", done => {
+            let router = new Router();
+
+            router.get('/getSession', ctx => {
+                ctx.body = ctx.session;
+            });
+
+            app.use(router.routes());
+
+            request(app.listen())
+            .get('/getSession')
+            .expect(200, (err, res) => {
+                if(err) done(err);
+                if(res.body.user == 'tom') done();
+            });
+        });
+
         it("should work when multiple clients access", done => {
             let client = request(app.listen());
 
