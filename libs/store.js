@@ -25,7 +25,7 @@ class Store {
         if (maxAge) session.__timeout = setTimeout(() => this.destroy(sid), maxAge);
         try {
             // JSON.stringify throws on some conditional, such as circular reference
-            this.sessions.set(sid) = JSON.stringify(session);
+            this.sessions.set(sid, JSON.stringify(session));
         } catch (err) {}
         
         return sid;
