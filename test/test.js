@@ -4,7 +4,7 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const request = require('supertest');
 const session = require('../index.js');
-const Store = require('../libs/store.js');
+const {Store} = session;
 
 
 class CustomStore extends Store {
@@ -35,58 +35,90 @@ class CustomStore extends Store {
 describe("koa-session2", () => {
     describe("when use default store", () => {
         let app = new Koa();
-        app.use(session());
+        let router = new Router();
 
-        app.use(ctx => {
+        app.use(session({
+            maxAge: 5000,
+        }));
+
+        router.get('/setSession', ctx => {
             ctx.session.user = "tom";
+            ctx.body = ctx.session;
+        })
+        .get('/getSession', ctx => {
             ctx.body = ctx.session;
         });
 
+        app.use(router.routes());
+
+        const server = app.listen();
+
+        let cookie = '';
+
+        /**
+         * @desc It should work when use default session store
+         */
         it("should work", done => {
-            request(app.listen())
-            .get("/")
-            .expect(200, done);
-        });
-
-        it("should set cookies", done => {
-            request(app.listen())
-            .get("/")
-            .expect("Set-Cookie", /koa:sess/)
+            request(server)
+            .get("/setSession")
             .expect(200, (err, res) => {
-                if(err) done(err);
-                let cookie = res.header["set-cookie"].join(";");
-                done();
+                if(!err) done();
+                // store cookie
+                cookie = res.header['set-cookie'][0];
             });
         });
 
+        /**
+         * @desc It should set cookies in response headers
+         */
+        it("should set cookies", done => {
+            if(/koa:sess/.test(cookie)) done();
+        });
+
+        /**
+         * @desc It should get the correct session value when use coockie
+         */
         it("should get the correct session", done => {
-            let router = new Router();
-
-            router.get('/getSession', ctx => {
-                ctx.body = ctx.session;
-            });
-
-            app.use(router.routes());
-
-            request(app.listen())
+            request(server)
             .get('/getSession')
+            .set('cookie', cookie)
             .expect(200, (err, res) => {
                 if(err) done(err);
                 if(res.body.user == 'tom') done();
             });
         });
 
-        it("should work when multiple clients access", done => {
-            let client = request(app.listen());
+        /**
+         * @desc It should work when session expired
+         */
+        it("should work when session expired", function(done) {
+            this.timeout(8000);
 
-            client.get("/").end((err_1, res_1) => {
+            // request after session's maxAge(5000)
+            setTimeout(() => {
+                request(server)
+                .get('/getSession')
+                .set('cookie', cookie)
+                .expect(200, (err, res) => {
+                    if(typeof res.body.user == 'undefined') done();
+                });
+            }, 6000);
+        });
+
+        /**
+         * @desc It should get different cookie when multiple clients access
+         */
+        it("should work when multiple clients access", done => {
+            let client = request(server);
+
+            client.get("/setSession").end((err_1, res_1) => {
                 let cookie_1 = res_1.header['set-cookie'];
 
                 // when a new client without cookie access server
                 // should set a new session and new cookie to the client
                 // not overwrite the old
 
-                client.get("/").end((err_2, res_2) => {
+                client.get("/setSession").end((err_2, res_2) => {
                     let cookie_2 = res_2.header['set-cookie'];
 
                     if(cookie_1 != cookie_2) done();
@@ -94,48 +126,42 @@ describe("koa-session2", () => {
             });
         });
 
+        /**
+         * @desc It should work when request with an old or not exists cookie
+         */
         it("set old sessionid should be work", done => {
-            let app = new Koa();
-            let router = Router();
-
-            app.use(session({
-                key: "SESSIONID"
-            }));
-
-            router.post("/message", ctx => {
-                ctx.session.message = "something"
-                ctx.body = ctx.session.message;
+            request(server)
+            .get("/setSession")
+            .set("cookie", "koa:sess=" + Store.prototype.getID(24))
+            .expect(200, (err, res) => {
+                if(res.body.user == 'tom') done();
             });
-
-            app.use(router.routes(), router.allowedMethods());
-
-            request(app.listen())
-            .post("/message")
-            //In browser the cookie will be remained old SESSIONID value.
-            //Store session will returned string type
-            //Error : TypeError: Cannot assign to read only property 'message' of
-            .set("cookie", "SESSIONID=" + Store.prototype.getID(24))
-            .expect(200, "something", done);
-
         });
     });
 
+
+
     describe("when use custom store", () => {
+        let app = new Koa();
+        app.use(session({
+            store: new CustomStore()
+        }));
+
+        app.use(ctx => {
+            ctx.session.user = {
+                name: "tom"
+            };
+
+            ctx.body = ctx.session;
+        });
+
+        const server = app.listen();
+
+        /**
+         * @desc It should work when use custom store
+         */
         it("should work", done => {
-            let app = new Koa();
-            app.use(session({
-                store: new CustomStore()
-            }));
-
-            app.use(ctx => {
-                ctx.session.user = {
-                    name: "tom"
-                };
-
-                ctx.body = ctx.session;
-            });
-
-            request(app.listen())
+            request(server)
             .get("/")
             .expect(200, done);
         });
@@ -144,7 +170,7 @@ describe("koa-session2", () => {
     describe("when session changed", () => {
         it("should call destroy", done => {
             let app = new Koa();
-            let router = Router();
+            let router = new Router();
             app.use(session({
                 // when store destroy methed called, done will be called
                 store: new CustomStore(done)

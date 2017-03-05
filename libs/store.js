@@ -3,6 +3,7 @@ const { randomBytes } = require('crypto');
 class Store {
     constructor() {
         this.sessions = new Map();
+        this.__timer = new Map();
     }
 
     getID(length) {
@@ -17,22 +18,26 @@ class Store {
 
     set(session, { sid =  this.getID(24), maxAge } = {}) {
         // Just a demo how to use maxAge and some cleanup
-        if (this.sessions.has(sid)) {
-            const { __timeout } = this.sessions.get(sid);
+        if (this.sessions.has(sid) && this.__timer.has(sid)) {
+            const { __timeout } = this.__timer.get(sid);
             if (__timeout) clearTimeout(__timeout);
         }
 
-        if (maxAge) session.__timeout = setTimeout(() => this.destroy(sid), maxAge);
+        if (maxAge) {
+            this.__timer.set(sid, setTimeout(() => this.destroy(sid), maxAge));
+        }
         try {
-            // JSON.stringify throws on some conditional, such as circular reference
             this.sessions.set(sid, JSON.stringify(session));
-        } catch (err) {}
-        
+        } catch (err) {
+            console.log('Set session error:', err);
+        }
+
         return sid;
     }
 
     destroy(sid) {
         this.sessions.delete(sid);
+        this.__timer.delete(sid);
     }
 }
 

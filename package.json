@@ -4,8 +4,8 @@
   "description": "Middleware for Koa2 to get/set session use with custom stores such as Redis or mongodb",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --harmony",
-    "test-cov": "node --harmony node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec"
+    "test": "mocha",
+    "test-cov": "node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec"
   },
   "repository": {
     "type": "git",
