@@ -8,9 +8,8 @@ const {Store} = session;
 
 
 class CustomStore extends Store {
-    constructor(done) {
+    constructor() {
         super();
-        this.done = done || function(){};
         this.store = {};
     }
 
@@ -28,7 +27,6 @@ class CustomStore extends Store {
 
     async destroy(sid) {
         delete this.store[sid];
-        this.done();
     }
 }
 
@@ -109,33 +107,39 @@ describe("koa-session2", () => {
          * @desc It should get different cookie when multiple clients access
          */
         it("should work when multiple clients access", done => {
-            let client = request(server);
 
-            client.get("/setSession").end((err_1, res_1) => {
+            request(server)
+            .get("/setSession")
+            .end((err_1, res_1) => {
                 let cookie_1 = res_1.header['set-cookie'];
 
                 // when a new client without cookie access server
                 // should set a new session and new cookie to the client
                 // not overwrite the old
 
-                client.get("/setSession").end((err_2, res_2) => {
+                request(server)
+                .get("/setSession")
+                .end((err_2, res_2) => {
                     let cookie_2 = res_2.header['set-cookie'];
 
                     if(cookie_1 != cookie_2) done();
                 });
             });
+
         });
 
         /**
          * @desc It should work when request with an old or not exists cookie
          */
         it("set old sessionid should be work", done => {
+
             request(server)
             .get("/setSession")
             .set("cookie", "koa:sess=" + Store.prototype.getID(24))
             .expect(200, (err, res) => {
                 if(res.body.user == 'tom') done();
             });
+
         });
     });
 
@@ -168,35 +172,46 @@ describe("koa-session2", () => {
     });
 
     describe("when session changed", () => {
-        it("should call destroy", done => {
-            let app = new Koa();
-            let router = new Router();
-            app.use(session({
-                // when store destroy methed called, done will be called
-                store: new CustomStore(done)
-            }));
+        let app = new Koa();
+        let router = new Router();
+        let store = new CustomStore();
+        app.use(session({
+            store,
+        }));
 
-            router.get("/set", ctx => {
-                ctx.session.user = {name: "tom"};
-                ctx.body = "done";
-            })
-            .get("/change", ctx => {
-                ctx.session.user = {name: "jim"};
-                ctx.body = "changed";
-            });
+        router.get("/set", ctx => {
+            ctx.session.user = {name: "tom"};
+            ctx.body = "done";
+        })
+        .get("/change", ctx => {
+            ctx.session.user = {name: "jim"};
+            ctx.body = "changed";
+        });
 
-            app.use(router.routes())
+        app.use(router.routes())
 
+        const server = app.listen();
 
-            let req = request(app.listen());
-            req.get("/set").expect(200, function(err, res){
+        /**
+         * @desc It should destroy the old session when set new one
+         */
+        it("should destroy old session", done => {
+
+            request(server)
+            .get("/set")
+            .expect(200, (err, res) => {
                 let cookie = res.header['set-cookie'];
+                let sid = cookie[0].split(';')[0].split('=')[1];
+
                 // change session to refresh
-                req.get("/change")
-                    .set("Cookie", cookie)
-                    .expect(200)
-                    .end();
+                request(server).get("/change")
+                .set("Cookie", cookie)
+                .expect(200, (err, res) => {
+                    // the old session id should be destroyed
+                    if(typeof store.store[sid] == 'undefined') done();
+                });
             });
+
         });
     });
 
@@ -217,23 +232,40 @@ describe("koa-session2", () => {
 
         app.use(router.routes())
 
-        let req = request(app.listen());
+        const server = app.listen();
 
+        /**
+         * @desc It should work
+         */
         it("should work", done => {
-            req.get("/setandforget").expect(200).end((err, res) => {
+
+            request(server)
+            .get("/setandforget")
+            .expect(200)
+            .end((err, res) => {
                 if (err) return done(err);
+                done();
+
                 // save cookie for next test
                 cookie = res.header["set-cookie"];
                 // clear the store
                 for (let key in store.store) {
                   delete store.store[key];
                 }
-                done();
             });
+
         });
 
+        /**
+         * @desc It should work even if store cleared
+         */
         it("should work even if store cleared", done => {
-            req.get("/setandforget").set("Cookie", cookie).expect(200).end((err, res) => {
+
+            request(server)
+            .get("/setandforget")
+            .set("Cookie", cookie)
+            .expect(200)
+            .end((err, res) => {
                 // cookie should reset and old one deleted when
                 // not found in store - new sid and old session
                 // destroyed
@@ -243,6 +275,7 @@ describe("koa-session2", () => {
                 }
                 done(new Error("error resetting cookie"));
             });
+            
         });
     });
 
