@@ -3,7 +3,7 @@ node_js:
     - "7"
 
 before_script:
-    - npm install istanbul
+    - npm install istanbul@next
 
 script:
     - npm run test-cov
