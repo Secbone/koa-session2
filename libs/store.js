@@ -19,7 +19,7 @@ class Store {
     set(session, { sid =  this.getID(24), maxAge } = {}) {
         // Just a demo how to use maxAge and some cleanup
         if (this.sessions.has(sid) && this.__timer.has(sid)) {
-            const { __timeout } = this.__timer.get(sid);
+            const __timeout = this.__timer.get(sid);
             if (__timeout) clearTimeout(__timeout);
         }
 

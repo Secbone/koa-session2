@@ -45,6 +45,10 @@ describe("koa-session2", () => {
         })
         .get('/getSession', ctx => {
             ctx.body = ctx.session;
+        })
+        .get('/updateSession', ctx => {
+            ctx.session.user = 'john';
+            ctx.body = ctx.session;
         });
 
         app.use(router.routes());
@@ -83,6 +87,19 @@ describe("koa-session2", () => {
             .expect(200, (err, res) => {
                 if(err) done(err);
                 if(res.body.user == 'tom') done();
+            });
+        });
+
+        /**
+         * @desc It should work when update session value
+         */
+        it("should work when update session", done => {
+            request(server)
+            .get('/updateSession')
+            .set('cookie', cookie)
+            .expect(200, (err, res) => {
+                if(err) done(err);
+                if(res.body.user == 'john') done();
             });
         });
 
@@ -146,56 +163,64 @@ describe("koa-session2", () => {
 
 
     describe("when use custom store", () => {
-        let app = new Koa();
+        const app = new Koa();
+        const router = new Router();
+        const store = new CustomStore();
+
         app.use(session({
-            store: new CustomStore()
+            store,
         }));
 
-        app.use(ctx => {
-            ctx.session.user = {
-                name: "tom"
-            };
-
-            ctx.body = ctx.session;
+        router.get('/set', ctx => {
+            ctx.session.user = {name: "tom"};
+            ctx.body = 'done';
+        })
+        .get('/change', ctx => {
+            ctx.session.user = {name: "jim"};
+            ctx.body = 'changed';
+        })
+        .get('/clear', ctx => {
+            ctx.session = {};
+            ctx.body = 'cleared';
         });
 
+        app.use(router.routes());
         const server = app.listen();
+
+        let cookie;
 
         /**
          * @desc It should work when use custom store
          */
         it("should work", done => {
             request(server)
-            .get("/")
-            .expect(200, done);
+            .get("/set")
+            .expect(200, (err, res) => {
+                if(!err) done();
+                cookie = res.header['set-cookie'][0];
+            });
         });
-    });
-
-    describe("when session changed", () => {
-        let app = new Koa();
-        let router = new Router();
-        let store = new CustomStore();
-        app.use(session({
-            store,
-        }));
-
-        router.get("/set", ctx => {
-            ctx.session.user = {name: "tom"};
-            ctx.body = "done";
-        })
-        .get("/change", ctx => {
-            ctx.session.user = {name: "jim"};
-            ctx.body = "changed";
-        });
-
-        app.use(router.routes())
-
-        const server = app.listen();
 
         /**
-         * @desc It should destroy the old session when set new one
+         * @desc It should destory old session when set an empty object
          */
-        it("should destroy old session", done => {
+        it("should work when set an empty object", done => {
+            request(server)
+            .get('/clear')
+            .set('cookie', cookie)
+            .expect(200, (err, res) => {
+                if(err) done(err);
+
+                let sid = cookie[0].split(';')[0].split('=')[1];
+                if(typeof store.store[sid] === 'undefined') done();
+
+            });
+        });
+
+        /**
+         * @desc It should update the old session when set new one
+         */
+        it("should work when update old session", done => {
 
             request(server)
             .get("/set")
@@ -207,8 +232,8 @@ describe("koa-session2", () => {
                 request(server).get("/change")
                 .set("Cookie", cookie)
                 .expect(200, (err, res) => {
-                    // the old session id should be destroyed
-                    if(typeof store.store[sid] == 'undefined') done();
+                    // the old session id should be updated
+                    if(store.store[sid].user.name == 'jim') done();
                 });
             });
 
@@ -225,7 +250,7 @@ describe("koa-session2", () => {
             store
         }));
 
-        router.get("/setandforget", ctx => {
+        router.get("/set", ctx => {
           ctx.session.user = {name: "tom"};
           ctx.body = "done";
         });
@@ -240,7 +265,7 @@ describe("koa-session2", () => {
         it("should work", done => {
 
             request(server)
-            .get("/setandforget")
+            .get("/set")
             .expect(200)
             .end((err, res) => {
                 if (err) return done(err);
@@ -262,20 +287,20 @@ describe("koa-session2", () => {
         it("should work even if store cleared", done => {
 
             request(server)
-            .get("/setandforget")
+            .get("/set")
             .set("Cookie", cookie)
             .expect(200)
             .end((err, res) => {
-                // cookie should reset and old one deleted when
-                // not found in store - new sid and old session
-                // destroyed
+                // cookie should reset when session is not found in store
+                let sid = cookie[0].split(';')[0].split('=')[1];
+
                 if (Object.keys(store.store).length === 1 &&
-                    cookie[0] !== res.header["set-cookie"][0]) {
+                    store.store[sid].user.name == 'tom') {
                   return done();
                 }
                 done(new Error("error resetting cookie"));
             });
-            
+
         });
     });
 

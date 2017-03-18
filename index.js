@@ -23,18 +23,20 @@ module.exports = (opts = {}) => {
         // if not changed
         if(old == JSON.stringify(ctx.session)) return;
 
-        // clear old session if exists
-        if(id) {
+        // if is an empty object
+        if(typeof ctx.session === 'object' && !Object.keys(ctx.session).length) {
+            ctx.session = null;
+        }
+        
+        // need clear old session
+        if(id && !ctx.session) {
             await store.destroy(id);
-            // set it to undefined instead of null to be able to use default parameters at Store
-            id = undefined;
+            return;
         }
 
-        // set new session
-        if(ctx.session && Object.keys(ctx.session).length) {
-            const sid = await store.set(ctx.session, Object.assign({}, opts, {sid: id}));
-            ctx.cookies.set(key, sid, opts);
-        }
+        // set/update session
+        const sid = await store.set(ctx.session, Object.assign({}, opts, {sid: id}));
+        ctx.cookies.set(key, sid, opts);
     }
 }
 
