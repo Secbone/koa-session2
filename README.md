@@ -110,7 +110,7 @@ MIT
 [npm-url]: https://npmjs.org/package/koa-session2
 [downloads-image]: http://img.shields.io/npm/dm/koa-session2.svg?style=flat-square
 [downloads-url]: https://npmjs.org/package/koa-session2
-[travis-image]: https://img.shields.io/travis/Secbone/koa-session2.svg?style=flat-square
+[travis-image]: https://img.shields.io/travis/Secbone/koa-session2/master.svg?style=flat-square
 [travis-url]: https://travis-ci.org/Secbone/koa-session2
 [codecov-image]: https://img.shields.io/codecov/c/github/Secbone/koa-session2/master.svg?style=flat-square
 [codecov-url]: https://codecov.io/gh/Secbone/koa-session2/branch/master
