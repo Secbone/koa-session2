@@ -24,7 +24,7 @@ module.exports = (opts = {}) => {
         if(old == JSON.stringify(ctx.session)) return;
 
         // if is an empty object
-        if(typeof ctx.session === 'object' && !Object.keys(ctx.session).length) {
+        if(ctx.session !== null && typeof ctx.session === 'object' && !Object.keys(ctx.session).length) {
             ctx.session = null;
         }
         
