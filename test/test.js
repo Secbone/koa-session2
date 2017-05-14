@@ -49,6 +49,10 @@ describe("koa-session2", () => {
         .get('/updateSession', ctx => {
             ctx.session.user = 'john';
             ctx.body = ctx.session;
+        })
+        .get('/clearSession', ctx => {
+            ctx.session = null;
+            ctx.body = 'ok';
         });
 
         app.use(router.routes());
@@ -145,6 +149,10 @@ describe("koa-session2", () => {
 
         });
 
+
+        // get new cookie id
+        cookie = "koa:sess=" + Store.prototype.getID(24)
+
         /**
          * @desc It should work when request with an old or not exists cookie
          */
@@ -152,11 +160,18 @@ describe("koa-session2", () => {
 
             request(server)
             .get("/setSession")
-            .set("cookie", "koa:sess=" + Store.prototype.getID(24))
+            .set("cookie", cookie)
             .expect(200, (err, res) => {
                 if(res.body.user == 'tom') done();
             });
 
+        });
+
+        it("should work when clear session by setting null value", done => {
+            request(server)
+            .get('/clearSession')
+            .set('cookie', cookie)
+            .expect(200, done)
         });
     });
 
