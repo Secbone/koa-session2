@@ -17,7 +17,10 @@ class CustomStore extends Store {
         return this.store[sid];
     }
 
-    async set(session, opts) {
+    async set(session, opts, ctx = {}) {
+        // for test the ctx param
+        if(ctx.test_id) return ctx.test_id
+
         if(!opts.sid) {
             opts.sid = this.getID(24);
         }
@@ -318,5 +321,42 @@ describe("koa-session2", () => {
 
         });
     });
+
+    describe("when pass the context to the session store", () => {
+        let app = new Koa();
+        let router = new Router();
+        let store = new CustomStore();
+
+        app.use(session({
+            store
+        }));
+
+        router.get("/set", ctx => {
+            ctx.test_id = 'the_id_in_ctx'
+            ctx.session.user = {name: "tom"};
+            ctx.body = "done";
+        });
+
+        app.use(router.routes())
+
+        const server = app.listen();
+
+        /**
+         * @desc It should work
+         */
+        it("should work", done => {
+
+            request(server)
+            .get("/set")
+            .expect(200)
+            .end((err, res) => {
+                if (err) return done(err);
+
+                // if the session id is the preset one
+                if(res.header["set-cookie"][0].includes('the_id_in_ctx')) done()
+            });
+
+        });
+    })
 
 });

@@ -9,7 +9,7 @@ module.exports = (opts = {}) => {
         if(!id) {
             ctx.session = {};
         } else {
-            ctx.session = await store.get(id);
+            ctx.session = await store.get(id, ctx);
             // check session must be a no-null object
             if(typeof ctx.session !== "object" || ctx.session == null) {
                 ctx.session = {};
@@ -30,12 +30,12 @@ module.exports = (opts = {}) => {
 
         // need clear old session
         if(id && !ctx.session) {
-            await store.destroy(id);
+            await store.destroy(id, ctx);
             return;
         }
 
         // set/update session
-        const sid = await store.set(ctx.session, Object.assign({}, opts, {sid: id}));
+        const sid = await store.set(ctx.session, Object.assign({}, opts, {sid: id}), ctx);
         ctx.cookies.set(key, sid, opts);
     }
 }
