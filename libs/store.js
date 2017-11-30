@@ -13,10 +13,11 @@ class Store {
     get(sid) {
         if (!this.sessions.has(sid)) return undefined;
         // We are decoding data coming from our Store, so, we assume it was sanitized before storing
-        return JSON.parse(this.sessions.get(sid));
+        let sv = this.sessions.get(sid);
+        return typeof sv === 'object' ? sv : JSON.parse(sv);
     }
 
-    set(session, { sid =  this.getID(24), maxAge } = {}) {
+    set(session, { sid =  this.getID(24), maxAge, onlyJSON } = {}) {
         // Just a demo how to use maxAge and some cleanup
         if (this.sessions.has(sid) && this.__timer.has(sid)) {
             const __timeout = this.__timer.get(sid);
@@ -27,7 +28,7 @@ class Store {
             this.__timer.set(sid, setTimeout(() => this.destroy(sid), maxAge));
         }
         try {
-            this.sessions.set(sid, JSON.stringify(session));
+            onlyJSON ? this.sessions.set(sid, JSON.stringify(session)) : this.sessions.set(sid, session);
         } catch (err) {
             console.log('Set session error:', err);
         }

@@ -1,7 +1,7 @@
 const Store = require('./libs/store.js');
 
 module.exports = (opts = {}) => {
-    const { key = "koa:sess", store = new Store() } = opts;
+    const { key = "koa:sess", store = new Store(), onlyJSON = true } = opts;
 
     return async (ctx, next) => {
         let id = ctx.cookies.get(key, opts);
@@ -9,7 +9,7 @@ module.exports = (opts = {}) => {
         if(!id) {
             ctx.session = {};
         } else {
-            ctx.session = await store.get(id, ctx);
+            ctx.session = await store.get(id);
             // check session must be a no-null object
             if(typeof ctx.session !== "object" || ctx.session == null) {
                 ctx.session = {};
@@ -30,12 +30,12 @@ module.exports = (opts = {}) => {
 
         // need clear old session
         if(id && !ctx.session) {
-            await store.destroy(id, ctx);
+            await store.destroy(id);
             return;
         }
 
         // set/update session
-        const sid = await store.set(ctx.session, Object.assign({}, opts, {sid: id}), ctx);
+        const sid = await store.set(ctx.session, Object.assign({}, opts, {sid: id}));
         ctx.cookies.set(key, sid, opts);
     }
 }
