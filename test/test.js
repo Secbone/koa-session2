@@ -174,7 +174,10 @@ describe("koa-session2", () => {
             request(server)
             .get('/clearSession')
             .set('cookie', cookie)
-            .expect(200, done)
+            .expect(200, (err, res) => {
+                // should set cookie to empty
+                if(/koa:sess=;/.test(res.header['set-cookie'][0])) done();
+            });
         });
     });
 

@@ -31,6 +31,7 @@ module.exports = (opts = {}) => {
         // need clear old session
         if(id && !ctx.session) {
             await store.destroy(id, ctx);
+            ctx.cookies.set(key, null);
             return;
         }
 
