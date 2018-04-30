@@ -7,14 +7,14 @@
 
 Middleware for [Koa2](https://github.com/koajs/koa) to get/set session use with custom stores such as Redis or mongodb
 
-Use native ES6(async/await) by Nodejs v7.x, use `--harmony` option.
+Use native ES6(async/await) by Nodejs v7.6.0 +
 
 Or you can use the old versions:
 - [babel](https://github.com/Secbone/koa-session2/tree/babel)
 - [node6](https://github.com/Secbone/koa-session2/tree/node6)
 
 ## Require
-node v7.x +
+node v7.6 +
 
 ## Install
 ```
