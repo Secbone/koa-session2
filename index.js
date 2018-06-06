@@ -19,12 +19,14 @@ module.exports = (opts = {}) => {
         const old = JSON.stringify(ctx.session);
 
         await next();
-
+        
+        const sess = JSON.stringify(ctx.session);
+        
         // if not changed
-        if(old == JSON.stringify(ctx.session)) return;
+        if(old == sess) return;
 
         // if is an empty object
-        if(ctx.session instanceof Object && !Object.keys(ctx.session).length) {
+        if(sess == '{}') {
             ctx.session = null;
         }
 
