@@ -18,20 +18,24 @@ module.exports = (opts = {}) => {
 
         const old = JSON.stringify(ctx.session);
 
+        // add refresh function
         need_refresh = false
         ctx.session.refresh = () => {need_refresh = true}
 
         await next();
 
+        // remove refresh function
         if(ctx.session && 'refresh' in ctx.session) {
             delete ctx.session.refresh
         }
 
+        const sess = JSON.stringify(ctx.session);
+
         // if not changed
-        if(!need_refresh && old == JSON.stringify(ctx.session)) return;
+        if(!need_refresh && old == sess) return;
 
         // if is an empty object
-        if(ctx.session instanceof Object && !Object.keys(ctx.session).length) {
+        if(sess == '{}') {
             ctx.session = null;
         }
 
