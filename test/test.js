@@ -11,6 +11,7 @@ class CustomStore extends Store {
     constructor() {
         super();
         this.store = {};
+        this.set_count = 0
     }
 
     async get(sid) {
@@ -18,6 +19,7 @@ class CustomStore extends Store {
     }
 
     async set(session, opts, ctx = {}) {
+        this.set_count += 1
         // for test the ctx param
         if(ctx.test_id) return ctx.test_id
 
@@ -357,6 +359,53 @@ describe("koa-session2", () => {
 
                 // if the session id is the preset one
                 if(res.header["set-cookie"][0].includes('the_id_in_ctx')) done()
+            });
+
+        });
+    })
+
+
+    describe("when refresh session", () => {
+        let app = new Koa();
+        let router = new Router();
+        let store = new CustomStore();
+
+        app.use(session({
+            store,
+            maxAge: 5000,
+        }));
+
+        router.get("/set", ctx => {
+            ctx.session.user = {name: "tom"};
+            ctx.body = "done";
+        })
+        .get("/refresh", ctx => {
+            ctx.session.refresh()
+            ctx.body = 'refreshed'
+        })
+
+        app.use(router.routes())
+
+        const server = app.listen();
+
+        /**
+         * @desc It should work
+         */
+        it("should work", done => {
+
+            // set a new session
+            request(server)
+            .get("/set")
+            .expect(200, (err, res) => {
+                let cookie = res.header['set-cookie'];
+
+                // refresh session
+                request(server).get("/refresh")
+                .set("Cookie", cookie)
+                .expect(200, (err, res) => {
+                    // the set function should be called and the set_count should be 2
+                    if(store.set_count == 2) done()
+                });
             });
 
         });
