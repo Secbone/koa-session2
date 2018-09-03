@@ -19,7 +19,7 @@ module.exports = (opts = {}) => {
         const old = JSON.stringify(ctx.session);
 
         // add refresh function
-        need_refresh = false
+        let need_refresh = false
         ctx.session.refresh = () => {need_refresh = true}
 
         await next();
