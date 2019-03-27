@@ -48,7 +48,7 @@ module.exports = (opts = {}) => {
 
         // set/update session
         const sid = await store.set(ctx.session, Object.assign({}, opts, {sid: id}), ctx);
-        ctx.cookies.set(key, sid, opts);
+        if(!id || need_refresh) ctx.cookies.set(key, sid, opts);
     }
 }
 
