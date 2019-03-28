@@ -5,11 +5,19 @@ module.exports = (opts = {}) => {
 
     return async (ctx, next) => {
         let id = ctx.cookies.get(key, opts);
+        let need_refresh = false;
 
         if(!id) {
             ctx.session = {};
         } else {
             ctx.session = await store.get(id, ctx);
+
+            // reassigning session ID if current is not found
+            if (ctx.session == null) {
+                id = await store.getID(24);
+                need_refresh = true;
+            }
+
             // check session must be a no-null object
             if(typeof ctx.session !== "object" || ctx.session == null) {
                 ctx.session = {};
@@ -19,7 +27,6 @@ module.exports = (opts = {}) => {
         const old = JSON.stringify(ctx.session);
 
         // add refresh function
-        let need_refresh = false
         ctx.session.refresh = () => {need_refresh = true}
 
         await next();
