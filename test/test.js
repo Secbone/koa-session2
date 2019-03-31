@@ -315,7 +315,7 @@ describe("koa-session2", () => {
             .expect(200)
             .end((err, res) => {
                 // cookie should reset when session is not found in store
-                let sid = cookie[0].split(';')[0].split('=')[1];
+                let sid = res.header["set-cookie"][0].split(';')[0].split('=')[1];
 
                 if (Object.keys(store.store).length === 1 &&
                     store.store[sid].user.name == 'tom') {
